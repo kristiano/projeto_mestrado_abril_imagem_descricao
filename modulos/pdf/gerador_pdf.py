@@ -51,19 +51,24 @@ th { background-color: #f6f8fa; font-weight: bold; text-align: left; }
 pre { background-color: #f6f8fa; padding: 16px; overflow: auto; border-radius: 3px; font-family: monospace; font-size: 13px; page-break-inside: avoid; }
 code { background-color: rgba(27,31,35,0.05); padding: 0.2em 0.4em; border-radius: 3px; font-family: monospace; font-size: 13px; }
 blockquote { padding: 0 1em; color: #6a737d; border-left: 0.25em solid #dfe2e5; margin: 0; }
-img { max-width: 100%; box-sizing: content-box; }
+img { max-width: 100%; height: auto; display: block; margin: 15px 0; box-sizing: content-box; }
 """
 
 def gerar_pdf(
     material_adaptado: str,
     assunto: str,
     dimensoes: dict,
-    pasta_saida: str = "materiais_gerados"
+    pasta_saida: str = "materiais_gerados",
+    base_dir: str = None
 ) -> str:
     print("\n***\nGerando PDF do material adaptado com padrão Github (WeasyPrint)...")
     os.makedirs(pasta_saida, exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     caminho_pdf = os.path.join(pasta_saida, f"material_{timestamp}.pdf")
+    
+    # Determinar o diretório base para imagens relativas
+    if base_dir is None:
+        base_dir = os.getcwd()
     
     caminho_md_adaptado = os.path.join(pasta_saida, f"material_{timestamp}.md")
     with open(caminho_md_adaptado, "w", encoding="utf-8") as f:
