@@ -5,7 +5,8 @@ import os
 from dotenv import load_dotenv
 import warnings
 warnings.filterwarnings("ignore")
-import google.generativeai as genai
+from google import genai as new_genai
+import google.generativeai as legacy_genai
 import time
 from google.api_core.exceptions import ResourceExhausted
 
@@ -13,7 +14,8 @@ class QuotaExceededError(Exception):
     """Custom exception indicating Gemini API quota has been exceeded."""
     pass
 
-_original_generate_content = genai.GenerativeModel.generate_content
+# Manter compatibilidade com o código legado que usa google.generativeai
+_original_generate_content = legacy_genai.GenerativeModel.generate_content
 
 def _generate_content_with_retry(self, *args, **kwargs):
     """Wrap generate_content with retry logic for quota limits.
@@ -36,7 +38,7 @@ def _generate_content_with_retry(self, *args, **kwargs):
             print(f"\n[!] Limite de cota da API (ResourceExhausted) atingido. Aguardando {espera} segundos antes de tentar novamente (tentativa {attempt+1}/{max_attempts})...")
             time.sleep(espera)
 
-genai.GenerativeModel.generate_content = _generate_content_with_retry
+legacy_genai.GenerativeModel.generate_content = _generate_content_with_retry
 
 load_dotenv()
 
@@ -56,16 +58,17 @@ def get_api_key() -> str:
 
 from typing import Optional
 
-def criar_modelo(system_instruction: Optional[str] = None) -> genai.GenerativeModel:
+def criar_modelo(system_instruction: Optional[str] = None) -> legacy_genai.GenerativeModel:
     """
     Configura a SDK e retorna um modelo Gemini disponível para uso.
     Descobre dinamicamente um modelo que suporte generateContent.
+    Usa a SDK legada (google.generativeai) para manter compatibilidade.
     """
     api_key = get_api_key()
-    genai.configure(api_key=api_key)
+    legacy_genai.configure(api_key=api_key)
 
     modelos_disponiveis = []
-    for m in genai.list_models():
+    for m in legacy_genai.list_models():
         if "generateContent" in getattr(m, "supported_generation_methods", []):
             modelos_disponiveis.append(m.name)
 
@@ -79,7 +82,18 @@ def criar_modelo(system_instruction: Optional[str] = None) -> genai.GenerativeMo
     nome_modelo = modelos_disponiveis[0]
     print(f"Usando modelo: {nome_modelo}")
 
-    return genai.GenerativeModel(
+    return legacy_genai.GenerativeModel(
         model_name=nome_modelo,
         system_instruction=system_instruction
     )
+
+
+def criar_cliente_genai():
+    """
+    Cria um cliente usando a nova SDK google.genai para recursos avançados
+    como geração de imagens nativa.
+    Retorna o cliente configurado.
+    """
+    api_key = get_api_key()
+    client = new_genai.Client(api_key=api_key)
+    return client
