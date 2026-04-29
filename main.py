@@ -68,7 +68,8 @@ if __name__ == "__main__":
     )
 
     # Etapa 3.1 - Geração Multimodal de Imagens para aprendizes visuais
-    material_adaptado = processar_imagens(material_adaptado)
+    # Gera imagens reais a partir dos prompts criados pela LLM
+    material_adaptado = processar_imagens(material_adaptado, gerar_imagens_reais=True)
 
     # Etapa 4 - Gerar PDF do material final adaptado
     caminho_pdf = gerar_pdf(
