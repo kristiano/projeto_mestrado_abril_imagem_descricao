@@ -1,0 +1,5 @@
+google-generativeai
+pymupdf4llm
+weasyprint
+markdown
+python-dotenv

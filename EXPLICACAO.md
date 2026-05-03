@@ -125,11 +125,13 @@ Contém 3 funções internas e 1 função pública:
 
 ### `modulos/llm/rewrite.py` — O Coração da Adaptação 🤖
 
-É aqui que a **mágica acontece**. Envia ao Gemini:
-- O **perfil do aluno** (as 4 dimensões ILS)
-- O **trecho do tópico** escolhido (até 8.000 caracteres)
+É aqui que a **mágica acontece**. Este módulo foi aprimorado para suportar documentos extensos e garantir clareza pedagógica:
 
-Com um **prompt de sistema detalhado** que instrui o Gemini a adaptar o conteúdo assim:
+1.  **Chunking Inteligente**: Divide o texto em blocos de até 15.000 caracteres, respeitando a estrutura de parágrafos para não cortar frases ao meio. Isso permite processar PDFs de qualquer tamanho.
+2.  **Contexto Global (Sumário)**: Extrai o sumário do documento original e o injeta em cada bloco processado, garantindo que a IA mantenha a coesão com a estrutura geral da disciplina.
+3.  **Humanização de Notações**: Instruções rigorosas obrigam a IA a traduzir símbolos lógicos e LaTeX para uma prosa amigável (ex: explicar o que é uma negação ou implicação em vez de apenas mostrar o símbolo).
+
+**Estratégias por Perfil (ILS):**
 
 | Dimensão | Polo A → Estratégia | Polo B → Estratégia |
 |---|---|---|
@@ -205,6 +207,15 @@ Obtenha sua chave em: https://aistudio.google.com/app/apikey
 | `assunto_selecionado.md` | Etapa 2.1 (assuntos_llm) | Apenas o trecho do tópico escolhido |
 | `materiais_gerados/material_*.md` | Etapa 4 (gerador_pdf) | O material adaptado em Markdown (resposta bruta da IA) |
 | `materiais_gerados/material_*.pdf` | Etapa 4 (gerador_pdf) | O PDF final personalizado para o aluno |
+
+---
+
+## 🛠️ Melhorias Recentes (Release Notes)
+
+- **Processamento de PDFs Longos**: Agora o sistema suporta arquivos extensos através do fatiamento inteligente de conteúdo.
+- **Humanização de Símbolos**: Fim da "barreira de símbolos". Toda notação lógica agora vem acompanhada de uma explicação didática.
+- **Expansão de Tópicos**: O prompt foi otimizado para cobrir 100% da ementa de Lógica Matemática (De Morgan, Predicados, Inferência, etc.).
+- **Estabilidade da API**: Implementação de retries e intervalos para evitar erros de cota do Gemini.
 
 ---
 
