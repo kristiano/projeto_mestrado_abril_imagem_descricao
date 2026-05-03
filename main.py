@@ -70,6 +70,11 @@ if __name__ == "__main__":
     # Etapa 3.1 - Geração Multimodal de Imagens para aprendizes visuais
     material_adaptado = processar_imagens(material_adaptado)
 
+    # Etapa 3.2 - Pós-processamento de segurança (Limpeza de LaTeX residual)
+    from limpar_latex import processar_markdown
+    print("\nExecutando limpeza de segurança (LaTeX -> Unicode)...")
+    material_adaptado = processar_markdown(material_adaptado)
+
     # Etapa 4 - Gerar PDF do material final adaptado
     caminho_pdf = gerar_pdf(
         material_adaptado=material_adaptado,
