@@ -30,9 +30,19 @@ class SmartModel:
     def _instanciar_modelo(self):
         nome = self.model_names[self.current_model_index]
         print(f"[SmartModel] Ativando modelo: {nome.replace('models/', '')}")
+        
+        # Configuração de segurança para evitar bloqueios em conteúdos acadêmicos
+        safety_settings = [
+            {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
+            {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
+            {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
+            {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
+        ]
+
         self.model = genai.GenerativeModel(
             model_name=nome,
-            system_instruction=self.system_instruction
+            system_instruction=self.system_instruction,
+            safety_settings=safety_settings
         )
 
     def generate_content(self, *args, **kwargs):

@@ -68,8 +68,8 @@ def adaptar_material(dimensoes: dict, assunto: str, texto: str) -> str:
         "Markdown estruturado. Use fórmulas em LaTeX ou texto simples claro."
     )
 
-    # Dividir o texto em partes menores para evitar cortes da LLM
-    tamanho_bloco = 15000
+    # Reduzimos o tamanho do bloco para garantir maior estabilidade e evitar respostas vazias
+    tamanho_bloco = 8000
     blocos = [texto[i : i + tamanho_bloco] for i in range(0, len(texto), tamanho_bloco)]
     
     material_total = []
@@ -88,9 +88,15 @@ def adaptar_material(dimensoes: dict, assunto: str, texto: str) -> str:
 
         try:
             response = model.generate_content(contexto_bloco)
-            material_total.append(response.text)
+            # Verificação de segurança: se a resposta não tem texto, tenta capturar o motivo
+            if not response.candidates or not response.candidates[0].content.parts:
+                 print(f"Aviso: Bloco {i+1} retornou resposta vazia. Finish Reason: {response.candidates[0].finish_reason}")
+                 material_total.append(f"\n[AVISO: O conteúdo deste bloco não pôde ser adaptado pela IA (Bloqueio ou Resposta Vazia)]\n\n{bloco}")
+            else:
+                material_total.append(response.text)
+            
             if len(blocos) > 1:
-                time.sleep(1)
+                time.sleep(2) # Aumentado para 2s para evitar exaustão de cota
         except Exception as e:
             print(f"Erro ao processar bloco {i+1}: {e}")
             material_total.append(f"\n[ERRO NA ADAPTAÇÃO: {e}]\n")
