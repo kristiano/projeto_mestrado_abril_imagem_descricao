@@ -51,7 +51,7 @@ th { background-color: #f6f8fa; font-weight: bold; text-align: left; }
 pre { background-color: #f6f8fa; padding: 16px; overflow: auto; border-radius: 3px; font-family: monospace; font-size: 13px; page-break-inside: avoid; }
 code { background-color: rgba(27,31,35,0.05); padding: 0.2em 0.4em; border-radius: 3px; font-family: monospace; font-size: 13px; }
 blockquote { padding: 0 1em; color: #6a737d; border-left: 0.25em solid #dfe2e5; margin: 0; }
-img { max-width: 100%; box-sizing: content-box; }
+img { max-width: 100%; box-sizing: content-box; display: block; margin: 20px auto; }
 """
 
 def gerar_pdf(
