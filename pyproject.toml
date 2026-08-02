@@ -1,0 +1,74 @@
+[project]
+name = "mpi"
+version = "0.1.0"
+description = "Personalização Inteligente de Materiais Didáticos com LLMs e o Modelo Felder-Silverman — API, Worker e Pipeline (PIBIC/UFMA)."
+requires-python = ">=3.13"
+readme = "README.md"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "sqlalchemy[asyncio]>=2.0",
+    "alembic>=1.13",
+    "pydantic>=2.9",
+    "pydantic-settings>=2.6",
+    "asyncpg>=0.30",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+    "httpx>=0.27",
+    "ruff>=0.7",
+    "mypy>=1.13",
+]
+
+# --- Lint (Ruff substitui flake8+isort+black; escolha justificada no relatório da Fase 0:
+# ferramenta única, padrão de fato do ecossistema uv/FastAPI, sem overhead de múltiplas
+# ferramentas concorrentes). ---
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+src = ["src", "tests"]
+# Protótipo legado (main.py, modulos/) fica fora do padrão de lint da nova
+# arquitetura até ser substituído fase a fase (Documento 5, Seção 15) —
+# não faz sentido reformatar código que será removido em breve.
+extend-exclude = ["modulos", "main.py", "limpar_latex.py"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM"]
+ignore = []
+
+[tool.ruff.lint.isort]
+known-first-party = ["core", "domain", "application", "infrastructure", "presentation", "shared"]
+
+# --- Checagem de tipos estática. mypy escolhido por ser o checker mais maduro para
+# SQLAlchemy 2.0 (Mapped[]/mapped_column) e Pydantic v2 via plugins oficiais. ---
+[tool.mypy]
+python_version = "3.13"
+mypy_path = "src"
+explicit_package_bases = true
+exclude = ["^modulos/", "^main\\.py$", "^limpar_latex\\.py$"]
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+no_implicit_optional = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+
+# --- Testes: pythonpath aponta para src/ para permitir imports curtos
+# (ex.: `from core import ...`, `from domain.aluno import ...`) sem instalar o
+# projeto como pacote — decisão registrada no relatório da Fase 0. ---
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+# Projeto de aplicação, não biblioteca: não há wheel a publicar, então o uv
+# apenas gerencia o ambiente virtual e as dependências (uv sync), sem etapa de build.
+[tool.uv]
+package = false
