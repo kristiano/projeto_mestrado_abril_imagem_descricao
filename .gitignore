@@ -1,0 +1,35 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# --- Ambientes virtuais / uv ---
+.venv/
+venv/
+uv-cache/
+
+# --- Segredos e configuração local (nunca versionar) ---
+.env
+.env.*
+!.env.example
+
+# --- Testes e cobertura ---
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# --- Editores / SO ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Artefatos gerados localmente (protótipo legado) ---
+*.pdf
+!documentacao/**/*.pdf
