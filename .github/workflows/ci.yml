@@ -1,0 +1,42 @@
+name: CI
+
+# CI mínimo da Fase 0 (Documento 5): lint + checagem de tipos + testes em
+# cada Pull Request para a branch main. Cresce nas fases seguintes
+# (testes de integração com banco real na Fase 2+, testes de segurança
+# consolidados na Fase 9), mas o esqueleto já é obrigatório desde a Fase 0.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Instalar uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+
+      - name: Definir versão do Python
+        run: uv python install 3.13
+
+      - name: Instalar dependências (uv sync)
+        run: uv sync --all-groups
+
+      - name: Lint (ruff check)
+        run: uv run ruff check src tests
+
+      - name: Formatação (ruff format --check)
+        run: uv run ruff format --check src tests
+
+      - name: Checagem de tipos (mypy)
+        run: uv run mypy src
+
+      - name: Testes (pytest)
+        run: uv run pytest -v
