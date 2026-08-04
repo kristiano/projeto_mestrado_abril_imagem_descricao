@@ -4,6 +4,31 @@ Sistema acadêmico desenvolvido no âmbito do **Mestrado em Ciência da Computa�
 
 ---
 
+## Status: migração em andamento para a arquitetura oficial (API + Worker)
+
+O protótipo descrito abaixo (`main.py` + `modulos/`) continua funcional e é mantido intacto durante a migração. A implementação da arquitetura definitiva (FastAPI + Worker + Pipeline, Clean Architecture) está em andamento em `src/`, seguindo rigorosamente:
+
+- [`documentacao/Documento_2_Modelagem_Sistema_v2.docx`](documentacao/Documento_2_Modelagem_Sistema_v2.docx) — modelagem do sistema (DER, casos de uso).
+- [`documentacao/Documento_3_Especificacao_API_v2.docx`](documentacao/Documento_3_Especificacao_API_v2.docx) — contrato REST completo.
+- [`documentacao/Documento_4_Arquitetura_Tecnica.docx`](documentacao/Documento_4_Arquitetura_Tecnica.docx) — arquitetura técnica da implementação.
+- [`documentacao/Documento_5_Plano_Implementacao.docx`](documentacao/Documento_5_Plano_Implementacao.docx) — ordem de módulos, padrões de código e roadmap.
+- [`DIRETRIZES_DESENVOLVIMENTO_SEGURANCA.md`](DIRETRIZES_DESENVOLVIMENTO_SEGURANCA.md) — diretriz obrigatória de segurança/SSDLC.
+
+Esses cinco documentos são a única fonte de verdade da nova arquitetura; qualquer código em `src/` deve estar em conformidade com eles.
+
+### Ambiente de desenvolvimento (`src/`)
+
+Gerenciado via [`uv`](https://docs.astral.sh/uv/):
+
+```bash
+uv sync --all-groups         # instala dependências de runtime e desenvolvimento
+uv run pytest                # executa a suíte de testes
+uv run ruff check src tests  # lint
+uv run mypy src              # checagem de tipos
+```
+
+---
+
 ## 📂 Arquitetura do Projeto
 
 ```text
@@ -25,7 +50,7 @@ projeto_bkb/
 
 ---
 
-## ⚙️ Como Funciona
+## Como Funciona
 
 Ao executar `python main.py`, o pipeline percorre 5 etapas em sequência:
 
@@ -60,7 +85,7 @@ O material adaptado em Markdown é salvo na raiz e convertido para PDF via **Wea
 
 ---
 
-## 🔄 Fluxograma
+## Fluxograma
 
 ```mermaid
 graph TD
@@ -83,7 +108,7 @@ graph TD
 
 ---
 
-## 🚀 Como Executar
+##  Como Executar
 
 ### Pré-requisitos
 
@@ -132,7 +157,7 @@ python main.py
 
 ---
 
-## 📚 Referências
+## Referências
 
 - Felder, R. M., & Silverman, L. K. (1988). *Learning and Teaching Styles in Engineering Education*.
 - Troussas, C. et al. (2020). *Adaptive Learning Rate Based on Entropy*. Entropy, MDPI.

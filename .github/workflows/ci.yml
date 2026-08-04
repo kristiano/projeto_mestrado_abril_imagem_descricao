@@ -1,10 +1,5 @@
 name: CI
 
-# CI mínimo da Fase 0 (Documento 5): lint + checagem de tipos + testes em
-# cada Pull Request para a branch main. Cresce nas fases seguintes
-# (testes de integração com banco real na Fase 2+, testes de segurança
-# consolidados na Fase 9), mas o esqueleto já é obrigatório desde a Fase 0.
-
 on:
   pull_request:
     branches: [main]

@@ -1,13 +1,5 @@
-"""Teste de fumaça (smoke test) da Fase 0.
-
-Objetivo único: garantir que o ambiente uv está corretamente configurado
-(Python >= 3.13, pacote `core` importável via pythonpath=["src"]) e que o
-pipeline de CI tem pelo menos um teste real para executar — evitando que
-"pytest" retorne "nenhum teste coletado" (exit code 5) no primeiro PR.
-
-Nenhuma regra de negócio é testada aqui; testes de domínio/aplicação
-começam na Fase 3 (módulo Aluno), conforme Documento 5, Seção 12.
-"""
+"""Smoke test da Fase 0 — garante que o ambiente e o pythonpath estão configurados
+antes de existir qualquer regra de negócio para testar (essa vem na Fase 3)."""
 
 import sys
 

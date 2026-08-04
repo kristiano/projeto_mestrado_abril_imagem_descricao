@@ -23,16 +23,12 @@ dev = [
     "mypy>=1.13",
 ]
 
-# --- Lint (Ruff substitui flake8+isort+black; escolha justificada no relatório da Fase 0:
-# ferramenta única, padrão de fato do ecossistema uv/FastAPI, sem overhead de múltiplas
-# ferramentas concorrentes). ---
+# Ruff cobre lint + format num único binário, evitando empilhar flake8/isort/black.
 [tool.ruff]
 line-length = 100
 target-version = "py313"
 src = ["src", "tests"]
-# Protótipo legado (main.py, modulos/) fica fora do padrão de lint da nova
-# arquitetura até ser substituído fase a fase (Documento 5, Seção 15) —
-# não faz sentido reformatar código que será removido em breve.
+# legado fora do padrão de lint novo até ser substituído (Documento 5, Seção 15)
 extend-exclude = ["modulos", "main.py", "limpar_latex.py"]
 
 [tool.ruff.lint]
@@ -42,8 +38,12 @@ ignore = []
 [tool.ruff.lint.isort]
 known-first-party = ["core", "domain", "application", "infrastructure", "presentation", "shared"]
 
-# --- Checagem de tipos estática. mypy escolhido por ser o checker mais maduro para
-# SQLAlchemy 2.0 (Mapped[]/mapped_column) e Pydantic v2 via plugins oficiais. ---
+# Depends(...)/Query(...) como valor default são o padrão de DI do próprio FastAPI
+# (Documento 4, §7) — sem isso o B008 trata Depends como uma chamada mutável comum.
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["fastapi.Depends", "fastapi.params.Depends"]
+
+# mypy: mais maduro que as alternativas para SQLAlchemy 2.0 (Mapped[]) e Pydantic v2.
 [tool.mypy]
 python_version = "3.13"
 mypy_path = "src"
@@ -60,15 +60,12 @@ no_implicit_optional = true
 module = "tests.*"
 disallow_untyped_defs = false
 
-# --- Testes: pythonpath aponta para src/ para permitir imports curtos
-# (ex.: `from core import ...`, `from domain.aluno import ...`) sem instalar o
-# projeto como pacote — decisão registrada no relatório da Fase 0. ---
+# pythonpath em src/ permite `from core import ...` sem instalar o projeto como pacote.
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]
 asyncio_mode = "auto"
 
-# Projeto de aplicação, não biblioteca: não há wheel a publicar, então o uv
-# apenas gerencia o ambiente virtual e as dependências (uv sync), sem etapa de build.
+# aplicação, não biblioteca — uv só gerencia dependências, sem etapa de build/publish
 [tool.uv]
 package = false
